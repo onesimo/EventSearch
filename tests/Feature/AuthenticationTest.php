@@ -14,11 +14,13 @@ class AuthenticationTest extends TestCase
     //use RefreshDatabase;
     use WithFaker;
     protected $user;
+    protected $loginPath; 
 
     public function setUp() : void
     {
         parent::setUp();
         $this->user = User::factory()->create();
+        $this->loginPath = '/api/login';
     }
 
     public function test_users_can_register()
@@ -41,7 +43,7 @@ class AuthenticationTest extends TestCase
     public function test_users_can_authenticate_using_login()
     {    
         $user = $this->user; 
-        $this->postJson('/api/login', [
+        $this->postJson($this->loginPath, [
             'email' => $user->email,
             'password' => 'password',
         ])
@@ -55,7 +57,6 @@ class AuthenticationTest extends TestCase
         });
     }
     
-
     public function test_users_can_logout()
     {
         Sanctum::actingAs($this->user); 
@@ -65,7 +66,7 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_not_authenticate_with_invalid_password()
     {
-       $this->postJson('/api/login', [
+       $this->postJson($this->loginPath, [
             'email' => $this->user->email,
             'password' => 'this-is-a-wrong-password',
         ])
@@ -74,15 +75,16 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_not_authenticate_with_invalid_email()
     {
-        $this->postJson('/api/login', [
+        $this->postJson($this->loginPath, [
             'email' => 'email.com.br',
             'password' => $this->user->password,
         ])
         ->assertUnauthorized();
     }
+    
     public function test_users_can_not_login_without_email()
     {
-        $this->postJson('/api/login', [ 
+        $this->postJson($this->loginPath, [ 
             'password' => $this->user->email,
         ])
         ->assertJsonValidationErrors(['email']);
@@ -90,7 +92,7 @@ class AuthenticationTest extends TestCase
 
     public function test_users_can_not_login_without_password()
     {
-        $this->postJson('/api/login', [
+        $this->postJson($this->loginPath, [
             'email' => $this->user->password,
         ])
         ->assertJsonValidationErrors(['password']);
