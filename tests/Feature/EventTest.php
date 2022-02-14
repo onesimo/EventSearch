@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Tests\TestCase;
 use Laravel\Sanctum\Sanctum;
 
-class EventSearchTest extends TestCase
+class EventTest extends TestCase
 {
     //use RefreshDatabase;
     use withFaker;

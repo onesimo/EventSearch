@@ -9,7 +9,7 @@ use App\Models\User;
 use Illuminate\Testing\Fluent\AssertableJson;
 use Laravel\Sanctum\Sanctum;
 
-class AuthenticationTest extends TestCase
+class AuthTest extends TestCase
 {
     //use RefreshDatabase;
     use WithFaker;
