@@ -1,0 +1,185 @@
+openapi: 3.0.1
+info:
+  title: Event Search Test
+  description: This is test for event search API
+  version: 1.0.0
+servers:
+- url: https://event-search-test.herokuapp.com/api
+tags:
+- name: auth
+  description: Authenticate user
+- name: event
+  description: Search events
+paths:
+  /login:
+    post:
+      tags:
+      - auth
+      summary: Authenticate user
+      parameters:
+      - name: email
+        in: query
+        description: The user name for login
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: The password for login
+        required: true
+        schema:
+          type: string
+      responses:
+        201:
+          description: Authentication Successful - Token Created
+          content:
+            application/json: 
+                schema: 
+                  $ref: '#/components/schemas/userLogin'
+        401:
+          description: Invalid Credentials
+          content:
+            application/json: 
+                schema: 
+                  $ref: '#/components/schemas/userLoginFailed'
+  /logout:
+    post:
+      tags:
+      - auth
+      summary: Logout user
+      responses:
+        200:
+          description: Logged Out,revoke user tokens
+          content:
+            application/json: 
+                schema: 
+                  $ref: '#/components/schemas/logout'
+        401:
+          description: Invalid Credentials
+          content:
+            application/json: 
+                schema: 
+                  $ref: '#/components/schemas/logoutFailed'
+      security:
+        - bearerAuth: []
+  /event:
+    get:
+      tags:
+      - event
+      summary: Search Events
+      description: Search events by date and/or location (Country/City) <br> At least
+        one parameter is required(term/date)
+      operationId: updatePet
+      parameters:
+      - name: term
+        in: query
+        description: City or Country
+        schema:
+          type: string
+      - name: date
+        in: query
+        description: Search events by date - valid format d-m-Y
+        schema:
+          type: string 
+        
+      responses:
+        200:
+          description: Successful
+          content:
+            application/json: 
+                schema: {}
+        401:
+          description: Unauthenticated
+          content:
+            application/json: 
+                schema: {}
+        422:
+          description: Validation exception
+          content:
+            application/json: 
+                schema: {}
+      security:
+        - bearerAuth: []
+  /register:
+    post:
+      tags:
+      - auth
+      summary: Create user
+      description: This endpoint was created only for purpose of testing
+      operationId: createUser
+      requestBody:
+        description: Created user object
+        content:
+          '*/*':
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      responses:
+        default:
+          description: successful operation
+          content:
+            application/json: 
+                schema: {}
+      x-codegen-request-body-name: body
+ 
+    
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT 
+  schemas:
+    User:
+      type: object
+      properties:
+        name:
+          type: string
+          example: Mary Jane
+        email:
+          type: string
+          example: maryjane@email.com
+        password:
+          type: string
+          example: password
+        password_confirmation:
+          type: string
+          example: password
+      xml:
+        name: User
+    userLoginFailed:
+      properties:
+        message: 
+          type: string
+          example: "Invalid Credentials"
+    logout:
+      properties:
+        message: 
+          type: string
+          example: "Logged Out"
+    logoutFailed:
+      properties:
+        message: 
+          type: string
+          example: "Unauthenticated"
+    userLogin:
+      required:
+      - email
+      - password
+      type: object
+      properties: 
+        user:
+          properties:
+            id:
+              type: integer
+              example: 12
+            email:
+              type: string
+              example: myemail@net.com
+            password:
+              type: string
+              example: password
+        token:
+          type: string
+          example: "14|nePD0MOPpSkv4HthnCeoCM8rcfjtCbG7n9K8I351"
+    
