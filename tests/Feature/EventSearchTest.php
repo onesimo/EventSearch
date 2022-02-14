@@ -7,11 +7,10 @@ use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\User;
 use Carbon\Carbon;
 use Tests\TestCase;
-use Laravel\Sanctum\Sanctum; 
-
+use Laravel\Sanctum\Sanctum;
 
 class EventSearchTest extends TestCase
-{   
+{
     //use RefreshDatabase;
     use withFaker;
     protected $user;
@@ -29,11 +28,10 @@ class EventSearchTest extends TestCase
     }
 
     public function test_users_can_search_with_term_and_date()
-    { 
+    {
         $this->getJson($this->path.'?term='.$this->country.'&date='.Carbon::tomorrow()->format('d-m-Y'))
         ->assertJsonStructure(['data'])
         ->assertSuccessful();
-
     }
 
     public function test_users_can_search_with_term_only()
@@ -67,5 +65,4 @@ class EventSearchTest extends TestCase
         $this->getJson($this->path.'?term='.$this->country.'&date='.Carbon::tomorrow()->format('d/m/Y'))
         ->assertJsonValidationErrors(['date']);
     }
-
 }

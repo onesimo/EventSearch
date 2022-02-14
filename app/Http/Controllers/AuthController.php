@@ -10,7 +10,7 @@ use App\Http\Requests\RegisterRequest;
 use App\Http\Resources\AuthLoginRegisterResource;
 
 class AuthController extends Controller
-{   
+{
     public function login(LoginRequest $request)
     {
         $fields = $request->validated();
@@ -28,7 +28,7 @@ class AuthController extends Controller
     public function logout()
     {
         auth()->user()->tokens()->delete();
-        return response(['message'=> 'Logged Out'],response::HTTP_OK);
+        return response(['message'=> 'Logged Out'], response::HTTP_OK);
     }
 
     public function register(RegisterRequest $request)

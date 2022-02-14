@@ -16,7 +16,7 @@ class RequestLogging
      * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
     public function handle(Request $request, Closure $next)
-    {   
+    {
         $ApiLogging = new ApiLogging;
         $ApiLogging->user_id = auth()->user()->id;
         $ApiLogging->request = $request->getRequestUri();
