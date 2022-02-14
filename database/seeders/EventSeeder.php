@@ -18,17 +18,10 @@ class EventSeeder extends Seeder
         Event::truncate();
 
         $json = File::get("database/data/events.json");
-        $events = json_decode($json);
-  
+        $events = json_decode($json,true);
+        
         foreach ($events as $event) {
-            Event::create([
-                "id" => $event->id,
-                "name" => $event->name,
-                "city" => $event->city,
-                "country" => $event->country,
-                "startDate" => $event->startDate,
-                "endDate" => $event->endDate,
-            ]);
+            Event::create($event);
         }
     }
 }
