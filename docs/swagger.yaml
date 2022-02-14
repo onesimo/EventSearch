@@ -59,7 +59,7 @@ paths:
           content:
             application/json: 
                 schema: 
-                  $ref: '#/components/schemas/logoutFailed'
+                  $ref: '#/components/schemas/Unauthenticated'
       security:
         - bearerAuth: []
   /event:
@@ -87,17 +87,20 @@ paths:
           description: Successful
           content:
             application/json: 
-                schema: {}
+                schema: 
+                  $ref: '#/components/schemas/eventData'
         401:
           description: Unauthenticated
           content:
             application/json: 
-                schema: {}
+                schema: 
+                  $ref: '#/components/schemas/Unauthenticated'
         422:
           description: Validation exception
           content:
             application/json: 
-                schema: {}
+                schema:
+                  $ref: '#/components/schemas/validaionExepection'
       security:
         - bearerAuth: []
   /register:
@@ -107,21 +110,38 @@ paths:
       summary: Create user
       description: This endpoint was created only for purpose of testing
       operationId: createUser
-      requestBody:
-        description: Created user object
-        content:
-          '*/*':
-            schema:
-              $ref: '#/components/schemas/User'
+      parameters:
+      - name: name
+        in: query
+        description: The user name
         required: true
+        schema:
+          type: string
+      - name: email
+        in: query
+        description: The user email
+        required: true
+        schema:
+          type: string
+      - name: password
+        in: query
+        description: Password
+        required: true
+        schema:
+          type: string
+      - name: password_confirmation
+        in: query
+        description: The password confirmation for login
+        required: true
+        schema:
+          type: string
       responses:
         default:
           description: successful operation
           content:
             application/json: 
-                schema: {}
-      x-codegen-request-body-name: body
- 
+                schema:
+                  $ref: '#/components/schemas/User'
     
 components:
   securitySchemes:
@@ -157,11 +177,57 @@ components:
         message: 
           type: string
           example: "Logged Out"
-    logoutFailed:
+    Unauthenticated:
       properties:
         message: 
           type: string
           example: "Unauthenticated"
+    eventData:
+      properties:
+        current_page:
+          type: integer
+          example: 1
+        data:
+          properties:
+            id:
+              type: integer
+              example: 21
+            name:
+              type: string
+              example: "Ex exercitation et occaecat excepteur nostrud aute voluptate elit."  
+            country:
+              type: string
+              example: "Bahamas"  
+            city:
+              type: string
+              example: "Dupuyer"
+            startDate:
+              type: string
+              example: "2022-04-07"  
+            endDate:
+              type: string
+              example: "2022-05-11"
+        first_page_url:
+          type: string
+          example: http://event-search-test.herokuapp.com/api/event?page=1
+        from:
+          type: string
+          example: 1
+        next_page_url:
+          type: string
+          example: null
+        path:
+          type: string
+          example: http://event-search-test.herokuapp.com/api/event
+        per_page:
+          type: string
+          example: 15
+        prev_page_url:
+          type: string
+          example: null
+        to:
+          type: string
+          example: 3 
     userLogin:
       required:
       - email
@@ -182,4 +248,15 @@ components:
         token:
           type: string
           example: "14|nePD0MOPpSkv4HthnCeoCM8rcfjtCbG7n9K8I351"
+    validaionExepection: 
+      properties:
+        message:
+          type: string
+          example: The given data was invalid.
+        errors:
+          properties:
+            date:
+              type: string
+              example: The date must be a date after or equal to today.
+      
     
