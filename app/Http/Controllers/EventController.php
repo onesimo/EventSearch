@@ -13,7 +13,7 @@ class EventController extends Controller
         $fields = $request->validated();
         
         $events = DB::table('events')
-        ->whereDate('startDate', '>', Carbon::today())
+        ->whereDate('startDate', '>=', Carbon::today())
         //parameter term, search similar values in city and country
         ->when(isset($fields['term']), function ($query) use ($fields) {
             $query->where(function ($queryGroup) use ($fields) {
