@@ -20,13 +20,13 @@ class AuthTest extends TestCase
     {
         parent::setUp();
         $this->user = User::factory()->create();
-        $this->loginPath = '/api/login';
+        $this->loginPath = route('login');
     }
 
     public function test_users_can_register()
     {
         $password = $this->faker->password();
-        $user = $response = $this->postJson('/api/register', [
+        $user = $response = $this->postJson(route('register'), [
             'name'=> $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => $password,
@@ -60,7 +60,7 @@ class AuthTest extends TestCase
     public function test_users_can_logout()
     {
         Sanctum::actingAs($this->user);
-        $this->postJson('/api/logout')
+        $this->postJson(route('logout'))
         ->assertSuccessful();
     }
 

@@ -22,7 +22,7 @@ class EventTest extends TestCase
         parent::setUp();
         $this->user = User::factory()->create();
         $this->country = $this->faker->country();
-        $this->path = '/api/event';
+        $this->path = route('event');
 
         Sanctum::actingAs($this->user);
     }
