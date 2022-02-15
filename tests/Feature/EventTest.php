@@ -13,18 +13,16 @@ class EventTest extends TestCase
 {
     //use RefreshDatabase;
     use withFaker;
-    protected $user;
     protected $contry;
     protected $path;
 
     public function setUp() : void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
         $this->country = $this->faker->country();
         $this->path = route('event');
 
-        Sanctum::actingAs($this->user);
+        Sanctum::actingAs(User::factory()->create());
     }
 
     public function test_users_can_search_with_term_and_date()
