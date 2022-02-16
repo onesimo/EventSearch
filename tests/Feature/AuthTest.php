@@ -65,7 +65,28 @@ class AuthTest extends TestCase
         ->assertSuccessful();
     }
 
-    public function test_users_can_not_authenticate_with_invalid_password()
+    public function test_users_can_not_register_password_less_than_6_characters()
+    { 
+        $this->postJson(route('register'), [
+            'name'=> $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => '12345',
+            'password_confirmation' => '123456',
+        ])->assertJsonValidationErrors(['password']);
+    }
+
+    public function test_users_can_not_register_with_invalid_email()
+    {
+        $password = $this->faker->password();
+        $this->postJson(route('register'), [
+            'name'=> $this->faker->name(),
+            'email' =>'invalid.email.com',
+            'password' => $password,
+            'password_confirmation' => $password,
+        ])->assertJsonValidationErrors(['email']);
+    }
+
+    public function test_users_can_not_authenticate_with_wrong_password()
     {
         $this->postJson($this->loginPath, [
             'email' => $this->user->email,
@@ -74,10 +95,10 @@ class AuthTest extends TestCase
         ->assertUnauthorized();
     }
 
-    public function test_users_can_not_authenticate_with_invalid_email()
+    public function test_users_can_not_authenticate_with_wrong_email()
     {
         $this->postJson($this->loginPath, [
-            'email' => 'email.com.br',
+            'email' => 'user@email.com.br',
             'password' => $this->user->password,
         ])
         ->assertUnauthorized();
