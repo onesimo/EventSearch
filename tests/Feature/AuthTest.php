@@ -13,14 +13,15 @@ class AuthTest extends TestCase
 {
     //use RefreshDatabase;
     use WithFaker;
+    protected static $mockUser;
     protected $user;
     protected $loginPath;
 
     public function setUp() : void
     {
         parent::setUp();
-        $this->user = User::factory()->create();
         $this->loginPath = route('login');
+        $this->user = self::mockUser();
     }
 
     public function test_users_can_register()
@@ -96,5 +97,15 @@ class AuthTest extends TestCase
             'email' => $this->user->password,
         ])
         ->assertJsonValidationErrors(['password']);
+    }
+    /**
+     * Helpers
+     */
+    public function mockUser()
+    {
+        if (!isset(self::$mockUser)) {
+            self::$mockUser = User::factory()->create();
+        }
+        return self::$mockUser;
     }
 }
