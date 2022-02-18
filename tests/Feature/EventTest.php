@@ -3,7 +3,6 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\WithFaker;
 use App\Models\User;
 use Carbon\Carbon;
@@ -13,7 +12,7 @@ use Laravel\Sanctum\Sanctum;
 class EventTest extends TestCase
 {
     //use RefreshDatabase;
-    use withFaker;
+    use WithFaker;
     protected $contry;
     protected $path;
     protected static $userAuth = null;
@@ -27,7 +26,7 @@ class EventTest extends TestCase
     
     public function test_users_can_search_with_term_and_date()
     {
-        self::userAuth();
+        $this->userAuth();
         $this->getJson($this->path.'?term='.$this->country.'&date='.Carbon::tomorrow()->format('d-m-Y'))
         ->assertJsonStructure(['data'])
         ->assertSuccessful();
@@ -35,7 +34,7 @@ class EventTest extends TestCase
 
     public function test_users_can_search_with_term_only()
     {
-        self::userAuth();
+        $this->userAuth();
         $this->getJson($this->path.'?term='.$this->country)
         ->assertJsonStructure(['data'])
         ->assertSuccessful();
@@ -43,7 +42,7 @@ class EventTest extends TestCase
 
     public function test_users_can_search_with_date_only()
     {
-        self::userAuth();
+        $this->userAuth();
         $this->getJson($this->path.'?date='.Carbon::tomorrow()->format('d-m-Y'))
         ->assertJsonStructure(['data'])
         ->assertSuccessful();
@@ -57,21 +56,21 @@ class EventTest extends TestCase
 
     public function test_users_can_not_search_without_filters()
     {
-        self::userAuth();
+        $this->userAuth();
         $this->getJson($this->path)
         ->assertJsonStructure(['errors']);
     }
 
     public function test_users_can_not_search_past_dates()
     {   
-        self::userAuth();
+        $this->userAuth();
         $this->getJson($this->path.'?date='.Carbon::yesterday()->format('d-m-Y'))
         ->assertJsonValidationErrors(['date']);
     }
  
     public function test_users_can_not_search_date_with_wrong_format()
     {
-        self::userAuth();
+        $this->userAuth();
         $this->getJson($this->path.'?term='.$this->country.'&date='.Carbon::tomorrow()->format('d/m/Y'))
         ->assertJsonValidationErrors(['date']);
     }

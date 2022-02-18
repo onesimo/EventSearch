@@ -12,16 +12,14 @@ use Laravel\Sanctum\Sanctum;
 class AuthTest extends TestCase
 {
     //use RefreshDatabase;
-    use WithFaker;
-    protected static $mockUser;
-    protected $user;
+    use WithFaker; 
+    protected static $user = null;
     protected $loginPath;
 
     public function setUp() : void
     {
         parent::setUp();
         $this->loginPath = route('login');
-        $this->user = self::mockUser();
     }
 
     public function test_users_can_register()
@@ -43,7 +41,7 @@ class AuthTest extends TestCase
 
     public function test_users_can_authenticate_using_login()
     {
-        $user = $this->user;
+        $user = $this->mockUser();
         $this->postJson($this->loginPath, [
             'email' => $user->email,
             'password' => 'password',
@@ -60,7 +58,7 @@ class AuthTest extends TestCase
     
     public function test_users_can_logout()
     {
-        Sanctum::actingAs($this->user);
+        Sanctum::actingAs($this->mockUser());
         $this->postJson(route('logout'))
         ->assertSuccessful();
     }
@@ -89,7 +87,7 @@ class AuthTest extends TestCase
     public function test_users_can_not_authenticate_with_wrong_password()
     {
         $this->postJson($this->loginPath, [
-            'email' => $this->user->email,
+            'email' => $this->mockUser()->email,
             'password' => 'this-is-a-wrong-password',
         ])
         ->assertUnauthorized();
@@ -99,7 +97,7 @@ class AuthTest extends TestCase
     {
         $this->postJson($this->loginPath, [
             'email' => 'user@email.com.br',
-            'password' => $this->user->password,
+            'password' => $this->mockUser()->password,
         ])
         ->assertUnauthorized();
     }
@@ -107,7 +105,7 @@ class AuthTest extends TestCase
     public function test_users_can_not_login_without_email()
     {
         $this->postJson($this->loginPath, [
-            'password' => $this->user->email,
+            'password' => $this->mockUser()->email,
         ])
         ->assertJsonValidationErrors(['email']);
     }
@@ -115,18 +113,19 @@ class AuthTest extends TestCase
     public function test_users_can_not_login_without_password()
     {
         $this->postJson($this->loginPath, [
-            'email' => $this->user->password,
+            'email' => $this->mockUser()->password,
         ])
         ->assertJsonValidationErrors(['password']);
     }
     /**
      * Helpers
      */
-    public function mockUser()
+    protected function mockUser()
     {
-        if (!isset(self::$mockUser)) {
-            self::$mockUser = User::factory()->create();
+        if (null === self::$user){
+            self::$user = User::factory()->create();
         }
-        return self::$mockUser;
+        
+        return self::$user;
     }
 }
