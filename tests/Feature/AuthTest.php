@@ -69,7 +69,7 @@ class AuthTest extends TestCase
             'name'=> $this->faker->name(),
             'email' => $this->faker->unique()->safeEmail(),
             'password' => '12345',
-            'password_confirmation' => '123456',
+            'password_confirmation' => '12345',
         ])->assertJsonValidationErrors(['password']);
     }
 
